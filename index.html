@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A-Z Sign Language Word Translator</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 16px; margin: 0; }
+    h1 { font-size: 1.5rem; margin: 10px 0; }
+    .card { position: relative; width: 100%; max-width: 640px; aspect-ratio: 4 / 3; background: #1e293b; border-radius: 12px; overflow: hidden; }
+    video, canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    
+    .panel { margin-top: 16px; background: #1e293b; padding: 16px; border-radius: 12px; width: 100%; max-width: 640px; text-align: center; display: flex; flex-direction: column; gap: 10px; }
+    .status { font-size: 13px; color: #38bdf8; background: #0f172a; padding: 6px 12px; border-radius: 20px; display: inline-block; }
+    .current-letter { font-size: 3rem; font-weight: bold; color: #38bdf8; min-height: 60px; }
+    .word-box { background: #0f172a; padding: 16px; border-radius: 8px; font-size: 1.5rem; color: #4ade80; font-family: monospace; min-height: 60px; display: flex; align-items: center; justify-content: center; word-break: break-all; }
+    
+    /* Audio Controls Styling */
+    .audio-controls { display: flex; align-items: center; justify-content: center; gap: 12px; background: #0f172a; padding: 10px 16px; border-radius: 8px; margin-bottom: 4px; }
+    .audio-controls label { font-size: 13px; color: #cbd5e1; }
+    input[type=range] { cursor: pointer; accent-color: #38bdf8; width: 100px; }
+
+    .controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .btn { background: #2563eb; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .btn-red { background: #dc2626; }
+    .btn-green { background: #059669; }
+    .btn-muted { background: #475569; }
+  </style>
+</head>
+<body>
+
+  <h1>A-Z Sign Translator & Word Builder</h1>
+
+  <div class="card">
+    <video id="webcam" autoplay playsinline></video>
+    <canvas id="output_canvas" width="640" height="480"></canvas>
+  </div>
+
+  <div class="panel">
+    <div class="status" id="statusBadge">Loading Model...</div>
+    
+    <!-- Audio Settings Bar -->
+    <div class="audio-controls">
+      <button id="toggleAudioBtn" class="btn btn-green" onclick="toggleAudio()">🔊 Audio: ON</button>
+      <label for="volumeSlider">Volume:</label>
+      <input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="updateVolumeLabel(this.value)">
+      <span id="volumeVal" style="font-size: 13px; font-weight: bold; width: 35px; text-align: left;">100%</span>
+    </div>
+
+    <div style="font-size: 12px; color: #94a3b8;">Active Pose:</div>
+    <div class="current-letter" id="letterResult">--</div>
+
+    <div style="font-size: 12px; color: #94a3b8;">Spelled Sentence:</div>
+    <div class="word-box" id="sentenceBox"></div>
+
+    <div class="controls">
+      <button class="btn btn-green" onclick="appendSpace()">␣ Space</button>
+      <button class="btn" onclick="backspace()">⌫ Backspace</button>
+      <button class="btn btn-red" onclick="clearAll()">🗑️ Clear</button>
+      <button class="btn" onclick="speakText(sentenceBox.innerText)">🔊 Read Sentence</button>
+    </div>
+  </div>
+
+  <script>
+    const videoElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    const letterResult = document.getElementById('letterResult');
+    const sentenceBox = document.getElementById('sentenceBox');
+    const statusBadge = document.getElementById('statusBadge');
+    
+    // Voice Control States
+    let isAudioEnabled = true;
+    let volumeLevel = 1.0; // Range: 0.0 to 1.0
+
+    let model = null;
+    let labels = [];
+
+    // Word building tracking variables
+    let holdLetter = "";
+    let holdStartTime = 0;
+    const HOLD_THRESHOLD_MS = 1200; // Hold pose for 1.2s to commit letter
+
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      const btn = document.getElementById('toggleAudioBtn');
+      if (isAudioEnabled) {
+        btn.innerText = "🔊 Audio: ON";
+        btn.className = "btn btn-green";
+      } else {
+        btn.innerText = "🔇 Audio: OFF";
+        btn.className = "btn btn-muted";
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function updateVolumeLabel(val) {
+      volumeLevel = parseInt(val, 10) / 100;
+      document.getElementById('volumeVal').innerText = `${val}%`;
+    }
+
+    function speakText(text) {
+      if (!isAudioEnabled || !text || volumeLevel === 0) return;
+      
+      window.speechSynthesis.cancel(); // Stop any pending utterances
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.volume = volumeLevel; // Applies selected 0-100% volume
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    async function loadModel() {
+      try {
+        const labelRes = await fetch("./labels.json");
+        labels = await labelRes.json();
+        model = await tf.loadLayersModel("./lstm_sign_model.json");
+        statusBadge.innerText = "🟢 Ready to Translate A-Z";
+        statusBadge.style.color = "#4ade80";
+      } catch (err) {
+        statusBadge.innerText = "⚠️ Model files missing";
+        statusBadge.style.color = "#f43f5e";
+      }
+    }
+
+    function extractLandmarks(results) {
+      const features = [];
+      if (results.leftHandLandmarks) {
+        drawHand(results.leftHandLandmarks, "#38bdf8");
+        const wrist = results.leftHandLandmarks[0];
+        for (const lm of results.leftHandLandmarks) features.push(lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z);
+      } else {
+        features.push(...new Array(63).fill(0));
+      }
+
+      if (results.rightHandLandmarks) {
+        drawHand(results.rightHandLandmarks, "#f43f5e");
+        const wrist = results.rightHandLandmarks[0];
+        for (const lm of results.rightHandLandmarks) features.push(lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z);
+      } else {
+        features.push(...new Array(63).fill(0));
+      }
+      return features;
+    }
+
+    function drawHand(landmarks, color) {
+      for (const pt of landmarks) {
+        canvasCtx.beginPath();
+        canvasCtx.arc(pt.x * canvasElement.width, pt.y * canvasElement.height, 4, 0, 2 * Math.PI);
+        canvasCtx.fillStyle = color;
+        canvasCtx.fill();
+      }
+    }
+
+    const holistic = new Holistic({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${f}` });
+    holistic.setOptions({ modelComplexity: 0, smoothLandmarks: false });
+
+    holistic.onResults((results) => {
+      canvasCtx.save();
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      const features = extractLandmarks(results);
+
+      if (model) {
+        predictGesture(features);
+      }
+      canvasCtx.restore();
+    });
+
+    async function predictGesture(features) {
+      const isHandPresent = features.some(val => val !== 0);
+      if (!isHandPresent) {
+        letterResult.innerText = "--";
+        holdLetter = "";
+        return;
+      }
+
+      const inputTensor = tf.tensor2d([features], [1, 126]);
+      const prediction = model.predict(inputTensor);
+      const probs = await prediction.data();
+      
+      const maxIndex = tf.argMax(probs).dataSync()[0];
+      const confidence = probs[maxIndex];
+
+      if (confidence > 0.65) {
+        const detectedLetter = labels[maxIndex];
+        letterResult.innerText = `${detectedLetter} (${Math.round(confidence * 100)}%)`;
+
+        // Timing mechanism to auto-add letter once held
+        const now = Date.now();
+        if (detectedLetter === holdLetter) {
+          if (now - holdStartTime >= HOLD_THRESHOLD_MS) {
+            sentenceBox.innerText += detectedLetter;
+            speakText(detectedLetter); // Voice output for individual letter typed
+            holdStartTime = now + 800; // Reset timer with cooldown to avoid repeating
+          }
+        } else {
+          holdLetter = detectedLetter;
+          holdStartTime = now;
+        }
+      } else {
+        letterResult.innerText = "...";
+        holdLetter = "";
+      }
+
+      inputTensor.dispose();
+      prediction.dispose();
+    }
+
+    function appendSpace() { sentenceBox.innerText += " "; }
+    function backspace() { sentenceBox.innerText = sentenceBox.innerText.slice(0, -1); }
+    function clearAll() { sentenceBox.innerText = ""; }
+
+    const camera = new Camera(videoElement, {
+      onFrame: async () => { await holistic.send({ image: videoElement }); },
+      width: 640,
+      height: 480
+    });
+    camera.start();
+    loadModel();
+  </script>
+</body>
+</html>

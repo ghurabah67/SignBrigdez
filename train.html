@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Static Gesture Collector & Trainer</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 16px; margin: 0; }
+    .card { position: relative; width: 100%; max-width: 640px; aspect-ratio: 4 / 3; background: #1e293b; border-radius: 12px; overflow: hidden; }
+    video, canvas { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    .panel { margin-top: 16px; background: #1e293b; padding: 16px; border-radius: 12px; width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 12px; }
+    .btn { background: #2563eb; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
+    .btn-green { background: #059669; }
+    .btn:disabled { background: #475569; cursor: not-allowed; }
+    input { padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; }
+    #log { background: #0f172a; padding: 10px; border-radius: 6px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #38bdf8; }
+  </style>
+</head>
+<body>
+
+  <h2>Static Gesture Collector & Trainer</h2>
+
+  <div class="card">
+    <video id="webcam" autoplay playsinline></video>
+    <canvas id="output_canvas" width="640" height="480"></canvas>
+  </div>
+
+  <div class="panel">
+    <label for="labelInput">Gesture Name:</label>
+    <input type="text" id="labelInput" placeholder="e.g. A, B, ThumbsUp, Peace">
+
+    <button id="recordBtn" class="btn" onclick="recordFrame()">📸 Record Single Gesture Frame</button>
+    <button id="trainBtn" class="btn btn-green" onclick="trainAndExport()">⚡ Train & Download Model</button>
+
+    <div id="counter">Total Recorded Frames: 0</div>
+    <div id="log">Status: Ready to collect</div>
+  </div>
+
+  <script>
+    const videoElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    const logBox = document.getElementById('log');
+    const counterDiv = document.getElementById('counter');
+
+    let collectedData = []; 
+    let currentFeatures = null;
+
+    function log(msg) {
+      logBox.innerHTML += `<div>> ${msg}</div>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function extractLandmarks(results) {
+      const features = [];
+      if (results.leftHandLandmarks) {
+        const wrist = results.leftHandLandmarks[0];
+        for (const lm of results.leftHandLandmarks) features.push(lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z);
+      } else {
+        features.push(...new Array(63).fill(0));
+      }
+
+      if (results.rightHandLandmarks) {
+        const wrist = results.rightHandLandmarks[0];
+        for (const lm of results.rightHandLandmarks) features.push(lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z);
+      } else {
+        features.push(...new Array(63).fill(0));
+      }
+      return features;
+    }
+
+    const holistic = new Holistic({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${f}` });
+    holistic.setOptions({ modelComplexity: 0, smoothLandmarks: false });
+
+    holistic.onResults((results) => {
+      canvasCtx.save();
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      currentFeatures = extractLandmarks(results);
+      canvasCtx.restore();
+    });
+
+    function recordFrame() {
+      const label = document.getElementById('labelInput').value.trim();
+      if (!label) {
+        alert("Please enter a gesture name first!");
+        return;
+      }
+      if (!currentFeatures) return;
+
+      collectedData.push({ label, features: currentFeatures });
+      log(`📸 Captured 1 frame for "${label}"`);
+      counterDiv.innerText = `Total Recorded Frames: ${collectedData.length}`;
+    }
+
+    async function trainAndExport() {
+      if (collectedData.length < 2) {
+        alert("Please record at least 2 gesture frames!");
+        return;
+      }
+
+      const labels = Array.from(new Set(collectedData.map(d => d.label)));
+      if (labels.length < 2) {
+        alert("Please record at least 2 distinct gestures!");
+        return;
+      }
+
+      document.getElementById('trainBtn').disabled = true;
+      log("Preparing dataset...");
+
+      const X_data = collectedData.map(d => d.features);
+      const Y_data = collectedData.map(d => labels.indexOf(d.label));
+
+      const xs = tf.tensor2d(X_data, [X_data.length, 126]);
+      const rawY = tf.tensor1d(Y_data, 'int32');
+      const ys = tf.oneHot(rawY, labels.length);
+      rawY.dispose();
+
+      log("Building Fast Dense Neural Network...");
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 64, activation: 'relu', inputShape: [126] }));
+      model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: labels.length, activation: 'softmax' }));
+
+      model.compile({ optimizer: tf.train.adam(0.01), loss: 'categoricalCrossentropy', metrics: ['accuracy'] });
+
+      log("Training model...");
+      await model.fit(xs, ys, {
+        epochs: 30,
+        batchSize: 8,
+        callbacks: {
+          onEpochEnd: async (epoch, logs) => {
+            log(`Epoch ${epoch + 1}/30 - Acc: ${(logs.acc * 100).toFixed(1)}%`);
+            await tf.nextFrame();
+          }
+        }
+      });
+
+      log("🟢 Training complete! Downloading files...");
+      
+      const blob = new Blob([JSON.stringify(labels, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "labels.json";
+      a.click();
+
+      await model.save('downloads://lstm_sign_model');
+      log("✅ Done! Copy labels.json, lstm_sign_model.json & lstm_sign_model.weights.bin to index.html folder.");
+
+      xs.dispose();
+      ys.dispose();
+      document.getElementById('trainBtn').disabled = false;
+    }
+
+    const camera = new Camera(videoElement, {
+      onFrame: async () => { await holistic.send({ image: videoElement }); },
+      width: 640,
+      height: 480
+    });
+    camera.start();
+  </script>
+</body>
+</html>
