@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Manual — SignBridgez</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.6;
+    }
+    .wrap { width: 100%; max-width: 700px; }
+
+    h1 {
+      color: #38bdf8;
+      font-size: 1.6rem;
+      margin: 10px 0 6px;
+    }
+    .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 24px; }
+
+    h2 {
+      color: #4ade80;
+      font-size: 1.15rem;
+      margin: 28px 0 10px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 6px;
+    }
+    h3 {
+      color: #38bdf8;
+      font-size: 1rem;
+      margin: 18px 0 8px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    ol, ul { padding-left: 22px; margin: 8px 0; }
+    li { margin-bottom: 6px; font-size: 14px; }
+    p { font-size: 14px; margin: 8px 0; }
+    code {
+      background: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #facc15;
+    }
+
+    .tip {
+      background: #0f172a;
+      border-left: 3px solid #38bdf8;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 10px 0;
+    }
+    .warn {
+      background: #0f172a;
+      border-left: 3px solid #f43f5e;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 10px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid #0f172a;
+    }
+    th { color: #38bdf8; font-weight: bold; }
+    td { color: #cbd5e1; }
+
+    .back {
+      display: inline-block;
+      margin-top: 24px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <h1>📖 User Manual</h1>
+    <div class="subtitle">SignBridgez — A-Z Sign Translator & Word Builder</div>
+
+    <!-- ===== GETTING STARTED ===== -->
+    <h2>🚀 Getting Started</h2>
+    <div class="card">
+      <ol>
+        <li>Open <code>index.html</code> in a modern browser (Chrome, Edge, Firefox).</li>
+        <li>Allow <strong>camera access</strong> when prompted.</li>
+        <li>Wait for the status badge to show <strong>🟢 Ready to Translate A-Z</strong>.</li>
+        <li>Hold your hand up in front of the camera and start signing!</li>
+      </ol>
+      <div class="tip">💡 Use good lighting and keep your hand clearly in frame for best accuracy.</div>
+    </div>
+
+    <!-- ===== TRANSLATING ===== -->
+    <h2>✋ Translating Signs</h2>
+    <div class="card">
+      <p>The app recognizes hand poses and converts them into letters:</p>
+      <ol>
+        <li><strong>Active Pose</strong> shows the letter currently detected (e.g. <code>A (95%)</code>).</li>
+        <li><strong>Hold the pose for ~1.2 seconds</strong> to commit the letter to your sentence.</li>
+        <li>The letter appears automatically in <strong>Spelled Sentence</strong>.</li>
+        <li>Each letter is also <strong>spoken aloud</strong> (if audio is on).</li>
+      </ol>
+      <div class="warn">⚠️ If it shows <code>...</code>, the confidence is too low — adjust your hand.</div>
+    </div>
+
+    <!-- ===== BUTTONS ===== -->
+    <h2>🔘 Buttons & Controls</h2>
+    <div class="card">
+      <table>
+        <tr><th>Button</th><th>What It Does</th></tr>
+        <tr><td>␣ Space</td><td>Adds a space to separate words</td></tr>
+        <tr><td>⌫ Backspace</td><td>Deletes the last letter</td></tr>
+        <tr><td>🗑️ Clear</td><td>Clears the whole sentence</td></tr>
+        <tr><td>🔊 Read Sentence</td><td>Speaks your full sentence aloud</td></tr>
+        <tr><td>📚 Open Sign Database</td><td>Opens a searchable list of signs</td></tr>
+        <tr><td>🇲🇾 BIM SignBank</td><td>Opens Malaysian Sign Language database</td></tr>
+      </table>
+    </div>
+
+    <!-- ===== AUDIO ===== -->
+    <h2>🔊 Audio Settings</h2>
+    <div class="card">
+      <ul>
+        <li><strong>Audio ON/OFF button</strong> — toggles all sound</li>
+        <li><strong>Volume slider</strong> — adjusts volume from 0% to 100%</li>
+        <li>Letters are spoken as they're added</li>
+        <li>Click <strong>🔊 Read Sentence</strong> to hear the full sentence</li>
+      </ul>
+      <div class="tip">💡 Turn audio OFF if you're practicing silently or in a quiet room.</div>
+    </div>
+
+    <!-- ===== DATABASE ===== -->
+    <h2>📚 Using the Sign Database</h2>
+    <div class="card">
+      <ol>
+        <li>Click <strong>📚 Open Sign Database</strong> on the main page.</li>
+        <li>Type in the search box to filter signs instantly.</li>
+        <li>Each entry shows the <strong>letter/word</strong>, its <strong>category</strong>, and a <strong>description</strong>.</li>
+        <li>Click the <strong>🔊 button</strong> to hear the word spoken.</li>
+        <li>Click <strong>← Back to Translator</strong> to return.</li>
+      </ol>
+    </div>
+
+    <!-- ===== BIM ===== -->
+    <h2>🇲🇾 Malaysian Sign Language (BIM)</h2>
+    <div class="card">
+      <p>The <strong>BIM SignBank</strong> button opens the official Malaysian Sign Language database:</p>
+      <ul>
+        <li>Search signs by keyword (Cari Isyarat BIM)</li>
+        <li>Browse by alphabet (Senarai Abjad)</li>
+        <li>Browse by category (Senarai Kategori)</li>
+        <li>View new signs (Isyarat Baru)</li>
+      </ul>
+      <div class="tip">💡 BIM SignBank is free and requires no login. It opens in a new tab.</div>
+    </div>
+
+    <!-- ===== TROUBLESHOOTING ===== -->
+    <h2>🛠️ Troubleshooting</h2>
+    <div class="card">
+      <table>
+        <tr><th>Problem</th><th>Fix</th></tr>
+        <tr><td>Camera not showing</td><td>Allow camera permission in browser settings</td></tr>
+        <tr><td>Status says "Loading Model..."</td><td>Wait a few seconds — it downloads the model</td></tr>
+        <tr><td>Status says "Model files missing"</td><td>Make sure <code>labels.json</code> and <code>lstm_sign_model.json</code> are in the same folder</td></tr>
+        <tr><td>Letters not detected</td><td>Improve lighting, keep hand centered, hold pose longer</td></tr>
+        <tr><td>No sound</td><td>Check the Audio button is ON and volume is not 0%</td></tr>
+        <tr><td>Database button does nothing</td><td>Make sure <code>database.html</code> is in the same folder</td></tr>
+      </table>
+    </div>
+
+    <!-- ===== TIPS ===== -->
+    <h2>💡 Tips for Best Results</h2>
+    <div class="card">
+      <ul>
+        <li>✅ Use a <strong>plain background</strong> (wall, no clutter)</li>
+        <li>✅ Keep your <strong>hand fully visible</strong> in frame</li>
+        <li>✅ <strong>Hold each pose</strong> steady for 1-2 seconds</li>
+        <li>✅ Good <strong>front lighting</strong> (no backlight)</li>
+        <li>✅ Position camera at <strong>chest/face height</strong></li>
+        <li>❌ Avoid moving too fast between letters</li>
+        <li>❌ Avoid dark rooms or strong shadows</li>
+      </ul>
+    </div>
+
+    <!-- ===== ABOUT ===== -->
+    <h2>ℹ️ About</h2>
+    <div class="card">
+      <p><strong>SignBridgez</strong> is a browser-based sign language translator and word builder.</p>
+      <ul>
+        <li>Powered by <strong>MediaPipe Holistic</strong> for hand tracking</li>
+        <li>Uses <strong>TensorFlow.js</strong> for gesture recognition</li>
+        <li>Supports <strong>A-Z fingerspelling</strong> and word building</li>
+        <li>Links to <strong>BIM SignBank</strong> for Malaysian Sign Language</li>
+      </ul>
+    </div>
+
+    <a class="back" href="index.html">← Back to Translator</a>
+  </div>
+
+</body>
+</html>
