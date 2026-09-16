@@ -227,6 +227,69 @@
     });
     camera.start();
     loadModel();
+        // ===== EASIEST DATABASE =====
+    const db = {
+      "A": "Fist, thumb beside index",
+      "B": "Flat hand, fingers up",
+      "C": "Curved hand like C",
+      "D": "Index up, others touch thumb",
+      "E": "Fingers bent to thumb",
+      "F": "Thumb + index touch, others up",
+      "G": "Index pointing sideways",
+      "H": "Two fingers pointing sideways",
+      "I": "Pinky up",
+      "J": "Pinky draws a J",
+      "K": "Index + middle up, thumb between",
+      "L": "L shape with thumb + index",
+      "M": "Thumb under three fingers",
+      "N": "Thumb under two fingers",
+      "O": "Fingers curved to thumb",
+      "P": "Like K, pointing down",
+      "Q": "Like G, pointing down",
+      "R": "Index + middle crossed",
+      "S": "Fist, thumb over fingers",
+      "T": "Thumb between index + middle",
+      "U": "Index + middle together",
+      "V": "Index + middle apart",
+      "W": "Three fingers up",
+      "X": "Index bent like hook",
+      "Y": "Thumb + pinky out",
+      "Z": "Index draws a Z",
+      "HELLO": "Wave open hand near head",
+      "THANK YOU": "Fingers from chin forward",
+      "PLEASE": "Flat hand circles on chest",
+      "YES": "Fist nodding like a head",
+      "NO": "Index + middle tap thumb",
+      "SORRY": "Fist circles on chest",
+      "LOVE": "Cross arms over chest",
+      "HELP": "Fist on flat palm, both up",
+      "STOP": "Flat hand chops other palm",
+      "EAT": "Fingers to mouth",
+      "DRINK": "C-hand tipped to mouth",
+      "MORE": "Both hands fingertips tap",
+      "FINISHED": "Both hands flip outward"
+    };
+
+    function lookupSign() {
+      const q = prompt("Enter letter or word (e.g. A, HELLO):");
+      if (!q) return;
+      const key = q.trim().toUpperCase();
+      if (db[key]) {
+        alert("🤟 " + key + "\n\n" + db[key]);
+        speakText(key);
+      } else {
+        alert("❌ '" + key + "' not in database.");
+      }
+    }
+
+    // Add button to page
+    const dbBtn = document.createElement('button');
+    dbBtn.className = 'btn';
+    dbBtn.style.background = '#7c3aed';
+    dbBtn.innerText = '📖 Sign Database';
+    dbBtn.onclick = lookupSign;
+    document.querySelector('.controls').appendChild(dbBtn);
+    // ===== END DATABASE =====
   </script>
 </body>
 </html>
