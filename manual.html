@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Manual — SignBridgez</title>
+  <title>How to Use SignBridgez</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -15,213 +15,232 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.6;
+      line-height: 1.7;
     }
-    .wrap { width: 100%; max-width: 700px; }
+    .wrap { width: 100%; max-width: 680px; }
 
     h1 {
       color: #38bdf8;
-      font-size: 1.6rem;
-      margin: 10px 0 6px;
+      font-size: 1.7rem;
+      margin: 10px 0 4px;
+      text-align: center;
     }
-    .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 24px; }
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
 
     h2 {
       color: #4ade80;
       font-size: 1.15rem;
-      margin: 28px 0 10px;
-      border-bottom: 1px solid #1e293b;
-      padding-bottom: 6px;
+      margin: 26px 0 10px;
     }
-    h3 {
-      color: #38bdf8;
-      font-size: 1rem;
-      margin: 18px 0 8px;
+
+    .step {
+      background: #1e293b;
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
     }
+    .num {
+      background: #2563eb;
+      color: #fff;
+      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+    .step p { margin: 0; font-size: 15px; }
+    .step strong { color: #38bdf8; }
 
     .card {
       background: #1e293b;
       padding: 16px 20px;
       border-radius: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      font-size: 15px;
     }
 
-    ol, ul { padding-left: 22px; margin: 8px 0; }
-    li { margin-bottom: 6px; font-size: 14px; }
-    p { font-size: 14px; margin: 8px 0; }
-    code {
-      background: #0f172a;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 13px;
-      color: #facc15;
-    }
+    ul { padding-left: 22px; margin: 8px 0; }
+    li { margin-bottom: 8px; font-size: 15px; }
 
     .tip {
       background: #0f172a;
-      border-left: 3px solid #38bdf8;
-      padding: 10px 14px;
+      border-left: 4px solid #38bdf8;
+      padding: 12px 16px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 14px;
       color: #cbd5e1;
       margin: 10px 0;
     }
     .warn {
       background: #0f172a;
-      border-left: 3px solid #f43f5e;
-      padding: 10px 14px;
+      border-left: 4px solid #fbbf24;
+      padding: 12px 16px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 14px;
       color: #cbd5e1;
       margin: 10px 0;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .btn-example {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
       font-size: 13px;
-      margin-top: 8px;
+      font-weight: bold;
+      margin: 2px;
     }
-    th, td {
-      text-align: left;
-      padding: 8px 10px;
-      border-bottom: 1px solid #0f172a;
-    }
-    th { color: #38bdf8; font-weight: bold; }
-    td { color: #cbd5e1; }
+    .btn-example.green { background: #059669; }
+    .btn-example.red { background: #dc2626; }
+    .btn-example.purple { background: #7c3aed; }
 
     .back {
       display: inline-block;
-      margin-top: 24px;
+      margin-top: 28px;
       color: #38bdf8;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: bold;
     }
+
+    .big-emoji { font-size: 1.4rem; margin-right: 6px; }
   </style>
 </head>
 <body>
 
   <div class="wrap">
-    <h1>📖 User Manual</h1>
-    <div class="subtitle">SignBridgez — A-Z Sign Translator & Word Builder</div>
+    <h1>👋 Welcome to SignBridgez</h1>
+    <div class="subtitle">Learn how to turn your hand signs into words</div>
 
-    <!-- ===== GETTING STARTED ===== -->
-    <h2>🚀 Getting Started</h2>
+    <!-- ===== WHAT IS IT ===== -->
+    <h2>🌟 What Is This?</h2>
     <div class="card">
-      <ol>
-        <li>Open <code>index.html</code> in a modern browser (Chrome, Edge, Firefox).</li>
-        <li>Allow <strong>camera access</strong> when prompted.</li>
-        <li>Wait for the status badge to show <strong>🟢 Ready to Translate A-Z</strong>.</li>
-        <li>Hold your hand up in front of the camera and start signing!</li>
-      </ol>
-      <div class="tip">💡 Use good lighting and keep your hand clearly in frame for best accuracy.</div>
+      SignBridgez is a <strong>sign language translator</strong>. You show hand signs
+      to your camera, and the app writes the letters and reads them out loud.
     </div>
 
-    <!-- ===== TRANSLATING ===== -->
-    <h2>✋ Translating Signs</h2>
+    <!-- ===== HOW TO START ===== -->
+    <h2>🚀 How to Start</h2>
+
+    <div class="step">
+      <div class="num">1</div>
+      <p>Open the SignBridgez page in your browser <strong>(Chrome or Edge is best)</strong>.</p>
+    </div>
+
+    <div class="step">
+      <div class="num">2</div>
+      <p>When asked, click <strong>"Allow"</strong> so the app can use your camera.</p>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <p>Wait until you see the green dot: <strong>🟢 Ready to Translate A-Z</strong>.</p>
+    </div>
+
+    <div class="step">
+      <div class="num">4</div>
+      <p>Hold your hand up in front of the camera and make a letter sign (like <strong>A, B, or C</strong>).</p>
+    </div>
+
+    <div class="step">
+      <div class="num">5</div>
+      <p>Hold the sign steady for about <strong>1 second</strong>. The letter appears on screen!</p>
+    </div>
+
+    <div class="tip">💡 Make sure your room is well lit and your hand is fully visible.</div>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <h2>🎬 How It Works</h2>
     <div class="card">
-      <p>The app recognizes hand poses and converts them into letters:</p>
-      <ol>
-        <li><strong>Active Pose</strong> shows the letter currently detected (e.g. <code>A (95%)</code>).</li>
-        <li><strong>Hold the pose for ~1.2 seconds</strong> to commit the letter to your sentence.</li>
-        <li>The letter appears automatically in <strong>Spelled Sentence</strong>.</li>
-        <li>Each letter is also <strong>spoken aloud</strong> (if audio is on).</li>
-      </ol>
-      <div class="warn">⚠️ If it shows <code>...</code>, the confidence is too low — adjust your hand.</div>
+      <ul>
+        <li>👁️ The camera watches your hand.</li>
+        <li>🧠 The app guesses which letter you're making.</li>
+        <li>✍️ If you hold the sign, the letter is added to your sentence.</li>
+        <li>🔊 The letter is also spoken out loud.</li>
+      </ul>
     </div>
 
     <!-- ===== BUTTONS ===== -->
-    <h2>🔘 Buttons & Controls</h2>
-    <div class="card">
-      <table>
-        <tr><th>Button</th><th>What It Does</th></tr>
-        <tr><td>␣ Space</td><td>Adds a space to separate words</td></tr>
-        <tr><td>⌫ Backspace</td><td>Deletes the last letter</td></tr>
-        <tr><td>🗑️ Clear</td><td>Clears the whole sentence</td></tr>
-        <tr><td>🔊 Read Sentence</td><td>Speaks your full sentence aloud</td></tr>
-        <tr><td>📚 Open Sign Database</td><td>Opens a searchable list of signs</td></tr>
-        <tr><td>🇲🇾 BIM SignBank</td><td>Opens Malaysian Sign Language database</td></tr>
-      </table>
-    </div>
-
-    <!-- ===== AUDIO ===== -->
-    <h2>🔊 Audio Settings</h2>
+    <h2>🔘 The Buttons</h2>
     <div class="card">
       <ul>
-        <li><strong>Audio ON/OFF button</strong> — toggles all sound</li>
-        <li><strong>Volume slider</strong> — adjusts volume from 0% to 100%</li>
-        <li>Letters are spoken as they're added</li>
-        <li>Click <strong>🔊 Read Sentence</strong> to hear the full sentence</li>
+        <li><span class="btn-example green">␣ Space</span> — puts a space between words</li>
+        <li><span class="btn-example">⌫ Backspace</span> — deletes the last letter</li>
+        <li><span class="btn-example red">🗑️ Clear</span> — erases everything</li>
+        <li><span class="btn-example">🔊 Read Sentence</span> — reads your whole sentence out loud</li>
+        <li><span class="btn-example green">📚 Open Sign Database</span> — see a list of all signs</li>
+        <li><span class="btn-example green">🇲🇾 BIM SignBank</span> — Malaysian Sign Language website</li>
+        <li><span class="btn-example purple">📖 User Manual</span> — this help page</li>
       </ul>
-      <div class="tip">💡 Turn audio OFF if you're practicing silently or in a quiet room.</div>
     </div>
 
-    <!-- ===== DATABASE ===== -->
-    <h2>📚 Using the Sign Database</h2>
+    <!-- ===== SOUND ===== -->
+    <h2>🔊 Sound Options</h2>
     <div class="card">
-      <ol>
-        <li>Click <strong>📚 Open Sign Database</strong> on the main page.</li>
-        <li>Type in the search box to filter signs instantly.</li>
-        <li>Each entry shows the <strong>letter/word</strong>, its <strong>category</strong>, and a <strong>description</strong>.</li>
-        <li>Click the <strong>🔊 button</strong> to hear the word spoken.</li>
-        <li>Click <strong>← Back to Translator</strong> to return.</li>
-      </ol>
-    </div>
-
-    <!-- ===== BIM ===== -->
-    <h2>🇲🇾 Malaysian Sign Language (BIM)</h2>
-    <div class="card">
-      <p>The <strong>BIM SignBank</strong> button opens the official Malaysian Sign Language database:</p>
       <ul>
-        <li>Search signs by keyword (Cari Isyarat BIM)</li>
-        <li>Browse by alphabet (Senarai Abjad)</li>
-        <li>Browse by category (Senarai Kategori)</li>
-        <li>View new signs (Isyarat Baru)</li>
+        <li>Tap <strong>🔊 Audio: ON</strong> to turn sound off or on.</li>
+        <li>Move the <strong>Volume</strong> slider to make it louder or quieter.</li>
+        <li>Every letter is spoken as you sign it.</li>
       </ul>
-      <div class="tip">💡 BIM SignBank is free and requires no login. It opens in a new tab.</div>
     </div>
 
-    <!-- ===== TROUBLESHOOTING ===== -->
-    <h2>🛠️ Troubleshooting</h2>
+    <!-- ===== EXAMPLE ===== -->
+    <h2>✏️ Try This Example</h2>
     <div class="card">
-      <table>
-        <tr><th>Problem</th><th>Fix</th></tr>
-        <tr><td>Camera not showing</td><td>Allow camera permission in browser settings</td></tr>
-        <tr><td>Status says "Loading Model..."</td><td>Wait a few seconds — it downloads the model</td></tr>
-        <tr><td>Status says "Model files missing"</td><td>Make sure <code>labels.json</code> and <code>lstm_sign_model.json</code> are in the same folder</td></tr>
-        <tr><td>Letters not detected</td><td>Improve lighting, keep hand centered, hold pose longer</td></tr>
-        <tr><td>No sound</td><td>Check the Audio button is ON and volume is not 0%</td></tr>
-        <tr><td>Database button does nothing</td><td>Make sure <code>database.html</code> is in the same folder</td></tr>
-      </table>
+      <p>Want to spell the word <strong>"HI"</strong>? Here's how:</p>
+      <ul>
+        <li>Sign the letter <strong>H</strong> → hold it → H appears</li>
+        <li>Sign the letter <strong>I</strong> → hold it → I appears</li>
+        <li>You now see <strong>HI</strong> on screen 🎉</li>
+      </ul>
+    </div>
+
+    <!-- ===== PROBLEMS ===== -->
+    <h2>❓ If Something Goes Wrong</h2>
+    <div class="card">
+      <ul>
+        <li><strong>Camera not working?</strong> → Refresh the page and click "Allow" again.</li>
+        <li><strong>Letters not showing?</strong> → Move your hand closer and hold it longer.</li>
+        <li><strong>Wrong letter detected?</strong> → Straighten your fingers and hold steady.</li>
+        <li><strong>No sound?</strong> → Check that Audio is ON and volume is up.</li>
+        <li><strong>Too dark?</strong> → Turn on a light near your face.</li>
+      </ul>
+      <div class="warn">⚠️ If the problem continues, refresh the page or restart your browser.</div>
     </div>
 
     <!-- ===== TIPS ===== -->
-    <h2>💡 Tips for Best Results</h2>
+    <h2>💡 Best Tips</h2>
     <div class="card">
       <ul>
-        <li>✅ Use a <strong>plain background</strong> (wall, no clutter)</li>
-        <li>✅ Keep your <strong>hand fully visible</strong> in frame</li>
-        <li>✅ <strong>Hold each pose</strong> steady for 1-2 seconds</li>
-        <li>✅ Good <strong>front lighting</strong> (no backlight)</li>
-        <li>✅ Position camera at <strong>chest/face height</strong></li>
-        <li>❌ Avoid moving too fast between letters</li>
-        <li>❌ Avoid dark rooms or strong shadows</li>
+        <li>✅ Sit in a <strong>bright room</strong></li>
+        <li>✅ Use a <strong>plain wall</strong> behind you</li>
+        <li>✅ Keep your <strong>hand steady</strong> for 1 second</li>
+        <li>✅ Keep your hand <strong>inside the camera view</strong></li>
+        <li>❌ Don't move too fast</li>
+        <li>❌ Don't cover your hand with your body</li>
       </ul>
     </div>
 
-    <!-- ===== ABOUT ===== -->
-    <h2>ℹ️ About</h2>
+    <!-- ===== NEED HELP ===== -->
+    <h2>📞 Need Help?</h2>
     <div class="card">
-      <p><strong>SignBridgez</strong> is a browser-based sign language translator and word builder.</p>
-      <ul>
-        <li>Powered by <strong>MediaPipe Holistic</strong> for hand tracking</li>
-        <li>Uses <strong>TensorFlow.js</strong> for gesture recognition</li>
-        <li>Supports <strong>A-Z fingerspelling</strong> and word building</li>
-        <li>Links to <strong>BIM SignBank</strong> for Malaysian Sign Language</li>
-      </ul>
+      If you need support, contact us at: <strong>your-email@example.com</strong>
     </div>
 
-    <a class="back" href="index.html">← Back to Translator</a>
+    <a class="back" href="index.html">← Back to SignBridgez</a>
   </div>
 
 </body>
