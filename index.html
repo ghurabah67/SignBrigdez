@@ -225,8 +225,6 @@
       width: 640,
       height: 480
     });
-    camera.start();
-    loadModel();
         // ===== EASIEST DATABASE =====
     const db = {
       "A": "Fist, thumb beside index",
@@ -290,6 +288,8 @@
     dbBtn.onclick = lookupSign;
     document.querySelector('.controls').appendChild(dbBtn);
     // ===== END DATABASE =====
+    camera.start();
+    loadModel();
   </script>
 </body>
 </html>
